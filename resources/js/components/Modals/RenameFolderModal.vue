@@ -8,7 +8,7 @@ import axios from 'axios'
 
 interface Props {
   name: string
-  onSubmit: (name: string, password: string) => void // Add password to the onSubmit function
+  onSubmit: (value: string) => void
   from: string
   loading?: boolean
 }
@@ -33,7 +33,7 @@ const submit = () => {
     
     axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then((response) => {
         if(response.data == true){
-          props.onSubmit(nameValue.value)
+          props.onSubmit(nameValue.value)          
         } else {
           Nova.error("Your password is incorrect. Please enter valid password", {type: 'error',})
         }
@@ -64,6 +64,7 @@ const submit = () => {
             class="block w-full border-0 p-0 bg-gray-100 dark:bg-gray-900 placeholder-gray-400 sm:text-sm text-black dark:text-white focus:outline-none focus:ring-0"
             name="name"
             type="text"
+            autocomplete="folder-name"
           />
         </div>
 
@@ -83,6 +84,7 @@ const submit = () => {
             :placeholder="__('Type your password here')"
             class="block w-full border-0 p-0 bg-gray-100 dark:bg-gray-900 placeholder-gray-400 sm:text-sm text-black dark:text-white focus:outline-none focus:ring-0"
             name="password"
+            autocomplete="current-password"
             type="password" 
           />
         </div>
