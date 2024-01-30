@@ -25,7 +25,7 @@ Route::as('nova-file-manager.')->middleware('nova')->group(static function () {
     });
 
     Route::get('/{resource?}', IndexController::class)->name('data');
-
+    Route::post('/validatePassword', [IndexController::class, 'validatePassword']);
     Route::prefix('files')->as('files.')->group(function () {
         Route::post('upload/{resource?}', [FileController::class, 'upload'])->name('upload');
         Route::post('rename/{resource?}', [FileController::class, 'rename'])->name('rename');

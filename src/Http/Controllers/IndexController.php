@@ -39,4 +39,10 @@ class IndexController extends Controller
             ],
         ]);
     }
+    public function validatePassword(Request $request)
+    {
+        $pwd = config('filemanager.deletePassword');
+        $checkPassword = strcmp($pwd,$request->password) == 0 ? true : false;
+        return response()->json($checkPassword);
+    }
 }

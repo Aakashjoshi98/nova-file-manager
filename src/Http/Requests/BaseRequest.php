@@ -65,7 +65,7 @@ class BaseRequest extends NovaRequest
         return $fields
             ->whereInstanceOf(FileManager::class)
             ->findFieldByAttribute($this->attribute, function () {
-                abort(404);
+                // abort(404);
             });
     }
 
