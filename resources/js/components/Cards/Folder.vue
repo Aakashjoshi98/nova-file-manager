@@ -7,6 +7,8 @@ import DeleteFolderModal from '@/components/Modals/DeleteFolderModal.vue'
 import RenameFolderModal from '@/components/Modals/RenameFolderModal.vue'
 import { usePermissions } from '@/hooks'
 import useBrowserStore from '@/stores/browser'
+import axios from 'axios'
+import { onMounted, ref } from 'vue'
 
 interface Props {
   folder: Folder
@@ -16,13 +18,39 @@ const props = defineProps<Props>()
 
 const store = useBrowserStore()
 const { showRenameFolder, showDeleteFolder } = usePermissions()
-
+let submitStatus = ref('idle');
+let passwordValue = ref('') // New ref for password
 // ACTIONS
 const openModal = (name: string) => store.openModal({ name })
 
 const setPath = (path: string) => store.setPath({ path })
 
-const onDelete = () => store.deleteFolder({ id: props.folder.id, path: props.folder.path })
+const onDelete = () => {
+  submitStatus.value = 'loading';
+  console.log(passwordValue.value);
+  
+  if (!passwordValue.value.trim()) {
+      Nova.error("Please enter a password.", { type: 'error' });
+      submitStatus.value = 'error';
+      return;
+    }
+  if (passwordValue.value) {
+    let data = {};
+    data.password = passwordValue.value;
+    
+    axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then((response) => {
+        if(response.data == true){
+          submitStatus.value = 'success'; 
+          store.deleteFolder({ id: props.folder.id, path: props.folder.path })   
+        } else {
+          submitStatus.value = 'error';
+          Nova.error("Your password is incorrect. Please enter valid password", {type: 'error',})
+        }
+    });
+    
+  }
+  
+}
 
 const onRename = (value: string) => {
   return store.renameFolder({
@@ -88,7 +116,8 @@ const onRename = (value: string) => {
     </div>
   </li>
 
-  <DeleteFolderModal v-if="showDeleteFolder" :name="`delete-folder-${folder.id}`" :on-confirm="onDelete" :content-name="folder.name" :type="folder.type"/>
+  <DeleteFolderModal v-if="showDeleteFolder" :name="`delete-folder-${folder.id}`" :on-confirm="onDelete" :content-name="folder.name" :type="folder.type" :submitStatus="submitStatus" :passwordValue="passwordValue"
+  @updatePasswordValue="newValue => passwordValue = newValue"/>
 
   <RenameFolderModal
     v-if="showRenameFolder"

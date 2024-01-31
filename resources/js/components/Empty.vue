@@ -50,5 +50,8 @@ defineProps<Props>()
     <p class="mt-1 text-sm text-gray-500">
       {{ subtitle ?? __('You can upload a new file or create a new folder') }}
     </p>
+    <button v-if="buttons.delete_folder && !filter" class="btn btn-default btn-danger text-red-500" @click="removeDirectory">
+                {{ __('Remove directory') }}
+              </button>
   </div>
 </template>

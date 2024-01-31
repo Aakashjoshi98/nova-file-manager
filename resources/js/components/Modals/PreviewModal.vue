@@ -23,7 +23,7 @@ import RenameFileModal from '@/components/Modals/RenameFileModal.vue'
 import { MODALS, PREVIEW_MODAL_NAME, QUEUE_MODAL_NAME } from '@/constants'
 import { useClipboard, usePermissions, usePintura } from '@/hooks'
 import useBrowserStore from '@/stores/browser'
-
+import axios from 'axios'
 interface Props {
   file: Entity
   readOnly: boolean
@@ -37,7 +37,8 @@ const store = useBrowserStore()
 const { copy: clipboardCopy } = useClipboard()
 const { showRenameFile, showDeleteFile, showCropImage, showUnzipFile } = usePermissions()
 const { usePinturaEditor } = usePintura()
-
+let submitStatus = ref('idle');
+let passwordValue = ref('') // New ref for password
 // STATE
 const buttonRef = ref<HTMLButtonElement | HTMLAnchorElement>()
 const isCropModalOpened = computed(() => store.isOpen(`crop-image-${props.file?.id}`))
@@ -47,7 +48,31 @@ const isField = computed(() => store.isField)
 // ACTIONS
 const openModal = (name: string) => store.openModal({ name })
 const onRename = (value: string) => store.renameFile({ id: props.file.id, from: props.file.path, to: value })
-const onDelete = () => store.deleteFiles({ paths: [props.file.path] })
+const onDelete = () => {
+  submitStatus.value = 'loading';
+  
+  if (!passwordValue.value.trim()) {
+      Nova.error("Please enter a password.", { type: 'error' });
+      submitStatus.value = 'error';
+      return;
+    }
+  if (passwordValue.value) {
+    let data = {};
+    data.password = passwordValue.value;
+    
+    axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then((response) => {
+        if(response.data == true){
+          submitStatus.value = 'success'; 
+          store.deleteFiles({ paths: [props.file.path] })
+        } else {
+          submitStatus.value = 'error';
+          Nova.error("Your password is incorrect. Please enter valid password", {type: 'error',})
+        }
+    });
+    
+  }
+  
+}
 const onUnzip = (path: string) => store.unzipFile({ path })
 
 const selectThenConfirm = () => {
@@ -237,7 +262,8 @@ const copy = (file: Entity) => {
         </div>
       </div>
 
-      <DeleteFileModal v-if="showDeleteFile" :name="`${MODALS.DELETE_FILES}-${file?.id}`" :on-confirm="onDelete" :contentName="file.name" :type="file.type"/>
+      <DeleteFileModal v-if="showDeleteFile" :name="`${MODALS.DELETE_FILES}-${file?.id}`" :on-confirm="onDelete" :contentName="file.name" :type="file.type" :submitStatus="submitStatus" :passwordValue="passwordValue"
+  @updatePasswordValue="newValue => passwordValue = newValue"/>
 
       <CropImageModal
         v-if="showCropImage && isCropModalOpened"
