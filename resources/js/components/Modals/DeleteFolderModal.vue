@@ -8,8 +8,6 @@ interface Props {
   name: string
   contentName: string
   type: string
-  submitStatus: string
-  passwordValue: string
   onConfirm: () => void
 }
 
@@ -26,14 +24,12 @@ const icon = computed(() => ExclamationCircleIcon)
     :title="__('NovaFileManager.deleteFolderTitle')"
     :contentName="contentName"
     :type="type"
-    :passwordValue="passwordValue"
     variant="danger"
     attribute="deleteFolder"
   >
     <template v-slot:confirmButton>
-      <Button :disabled="submitStatus === 'loading'" class="w-full sm:w-auto" type="submit" variant="primary" @click="onConfirm">
-        <span v-if="submitStatus === 'loading'">{{ __('Deleting') }}</span>
-        <span v-else>{{ __('Delete') }}</span>
+      <Button class="w-full sm:w-auto" type="button" variant="danger" @click="onConfirm">
+        {{ __('Delete') }}
       </Button>
     </template>
     <template v-slot:cancelButton="{ close }">

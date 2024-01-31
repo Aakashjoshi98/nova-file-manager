@@ -9,7 +9,6 @@ interface Props {
   name: string
   onConfirm: () => void
   count?: number
-  passwordValue: string
 }
 
 withDefaults(defineProps<Props>(), {
@@ -25,7 +24,6 @@ const icon = computed(() => ExclamationCircleIcon)
     :icon="icon"
     :is-open="isOpen"
     :name="name"
-    :passwordValue="passwordValue"
     :title="__('NovaFileManager.deleteFileTitle', { count })"
     variant="danger"
     attribute="deleteFile"

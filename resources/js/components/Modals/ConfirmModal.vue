@@ -3,7 +3,6 @@ import { DialogPanel, DialogTitle } from '@headlessui/vue'
 import { Component, computed } from 'vue'
 import { useErrors } from '@/hooks'
 import BaseModal from './BaseModal.vue'
-import { watchEffect, ref, getCurrentInstance } from 'vue'
 
 const variants = {
   danger: {
@@ -11,7 +10,7 @@ const variants = {
     iconColor: 'text-red-600 dark:text-red-500',
   },
 }
-const instance = getCurrentInstance();
+
 interface Props {
   name: string
   attribute: string
@@ -21,21 +20,14 @@ interface Props {
   variant: keyof typeof variants
   contentName: string
   type: string
-  passwordValue: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   variant: 'danger',
 })
 
-
-const localPasswordValue = ref(props.passwordValue)
-
-watchEffect(() => {
-  instance.emit('updatePasswordValue', localPasswordValue.value);
-})
 const { invalid, errors } = useErrors(props.attribute)
-// const passwordValue = ref('') // New ref for password
+
 // STATE
 const iconColorClass = computed(() => (props.variant ? variants[props.variant].iconColor : ''))
 const iconBackgroundClass = computed(() => (props.variant ? variants[props.variant].iconBackground : ''))
@@ -67,26 +59,6 @@ const iconBackgroundClass = computed(() => (props.variant ? variants[props.varia
               {{ content }}
             </p>
           </div>
-          <!-- Password Input -->
-        <div
-          :class="[
-            'w-full border rounded-md space-y-2 px-3 py-2 bg-gray-100 dark:bg-gray-900 shadow-sm focus-within:ring-1 focus-within:ring-blue-600 focus-within:border-blue-600',
-            !invalid ? 'border-gray-400 dark:border-gray-700' : 'border-red-400 dark:border-red-700',
-          ]"
-        >
-          <label class="block text-xs font-medium text-gray-700 dark:text-gray-200" for="password">
-            {{ __('Password') }}
-          </label>
-          <input
-            id="password"
-            v-model="localPasswordValue"
-            :placeholder="__('Type your password here')"
-            class="block w-full border-0 p-0 bg-gray-100 dark:bg-gray-900 placeholder-gray-400 sm:text-sm text-black dark:text-white focus:outline-none focus:ring-0"
-            name="password"
-            autocomplete="current-password"
-            type="password" 
-          />
-        </div>
           <template v-if="invalid">
             <p v-for="(error, index) in errors" :key="`confirm_modal_error_${index}`" class="mt-2 text-sm text-red-600">
               {{ error }}
