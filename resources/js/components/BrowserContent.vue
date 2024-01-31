@@ -6,7 +6,9 @@ import Empty from '@/components/Empty.vue'
 import FileGrid from '@/components/FileGrid.vue'
 import FolderGrid from '@/components/FolderGrid.vue'
 import List from '@/components/List.vue'
+import useBrowserStore from '@/stores/browser'
 
+const store = useBrowserStore()
 interface Props {
   view: View
   files: Entity[]
@@ -20,6 +22,11 @@ withDefaults(defineProps<Props>(), {
   filled: false,
   view: 'grid',
 })
+const onDelete = () => {
+
+  console.log('in remove function');
+  
+}
 </script>
 
 <template>
@@ -63,5 +70,5 @@ withDefaults(defineProps<Props>(), {
     <List />
   </template>
 
-  <Empty v-if="!filled" />
+  <Empty v-if="!filled" :on-confirm="onDelete"/>
 </template>
