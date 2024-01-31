@@ -237,7 +237,7 @@ const copy = (file: Entity) => {
         </div>
       </div>
 
-      <DeleteFileModal v-if="showDeleteFile" :name="`${MODALS.DELETE_FILES}-${file?.id}`" :on-confirm="onDelete" />
+      <DeleteFileModal v-if="showDeleteFile" :name="`${MODALS.DELETE_FILES}-${file?.id}`" :on-confirm="onDelete" :contentName="file.name" :type="file.type"/>
 
       <CropImageModal
         v-if="showCropImage && isCropModalOpened"

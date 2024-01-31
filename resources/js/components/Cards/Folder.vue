@@ -88,7 +88,7 @@ const onRename = (value: string) => {
     </div>
   </li>
 
-  <DeleteFolderModal v-if="showDeleteFolder" :name="`delete-folder-${folder.id}`" :on-confirm="onDelete" />
+  <DeleteFolderModal v-if="showDeleteFolder" :name="`delete-folder-${folder.id}`" :on-confirm="onDelete" :content-name="folder.name" :type="folder.type"/>
 
   <RenameFolderModal
     v-if="showRenameFolder"

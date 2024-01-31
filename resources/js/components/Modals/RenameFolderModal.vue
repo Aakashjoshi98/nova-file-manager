@@ -20,21 +20,34 @@ const { invalid, errors } = useErrors(OPERATIONS.RENAME_FOLDER)
 // STATE
 let nameValue = ref(null as string | null) // Rename value to nameValue for folder name
 let passwordValue = ref('') // New ref for password
-
+let submitStatus = ref('idle');
 // HOOKS
 onMounted(() => (nameValue.value = props.from))
-
+const clearPassword = () => {
+  passwordValue.value = ''; // Clear the password field
+}
 // ACTIONS
 const submit = () => {
-  
+  submitStatus.value = 'loading';
+  if (!passwordValue.value.trim()) {
+      Nova.error("Please enter a password.", { type: 'error' });
+      submitStatus.value = 'error';
+      return;
+    }
   if (nameValue.value && passwordValue.value) {
     let data = {};
     data.password = passwordValue.value;
-    
+    if (nameValue.value.length == 0) {
+      Nova.error("Name is requied", {type: 'error',})
+      submitStatus.value = 'error';
+      return false;
+    }
     axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then((response) => {
         if(response.data == true){
+          submitStatus.value = 'success'; 
           props.onSubmit(nameValue.value)          
         } else {
+          submitStatus.value = 'error';
           Nova.error("Your password is incorrect. Please enter valid password", {type: 'error',})
         }
     });
@@ -44,7 +57,7 @@ const submit = () => {
 </script>
 
 <template>
-  <InputModal :name="name" :on-submit="submit" :title="__('NovaFileManager.renameFolderTitle')">
+  <InputModal :name="name" :on-submit="submit" :title="__('NovaFileManager.renameFolderTitle')" @close="clearPassword">
     <template v-slot:inputs>
       <div>
         <!-- Folder Name Input -->
@@ -111,8 +124,9 @@ const submit = () => {
     </template>
 
     <template v-slot:submitButton>
-      <Button :disabled="value === from" class="w-full sm:w-auto" type="submit" variant="primary">
-        {{ __('Rename Folder') }}
+      <Button :disabled="submitStatus === 'loading'" class="w-full sm:w-auto" type="submit" variant="primary">
+        <span v-if="submitStatus === 'loading'">{{ __('Renaming') }}</span>
+        <span v-else>{{ __('Rename') }}</span>
       </Button>
     </template>
     <template v-slot:cancelButton="{ close }">

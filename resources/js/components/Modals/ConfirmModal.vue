@@ -18,6 +18,8 @@ interface Props {
   content: string
   icon: Component
   variant: keyof typeof variants
+  contentName: string
+  type: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -43,6 +45,12 @@ const iconBackgroundClass = computed(() => (props.variant ? variants[props.varia
           <component :is="icon" :class="`${iconColorClass} h-6 w-6`" aria-hidden="true" />
         </div>
         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+          <DialogTitle as="h1" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" v-if="type == 'folder'">
+            {{ __('Remove folder') }}: {{ contentName }}
+          </DialogTitle>
+          <DialogTitle as="h1" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" v-else>
+            {{ __('Remove File') }}: {{ contentName }}
+          </DialogTitle>
           <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
             {{ title }}
           </DialogTitle>

@@ -6,6 +6,8 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 interface Props {
   name: string
+  contentName: string
+  type: string
   onConfirm: () => void
 }
 
@@ -20,6 +22,8 @@ const icon = computed(() => ExclamationCircleIcon)
     :icon="icon"
     :name="name"
     :title="__('NovaFileManager.deleteFolderTitle')"
+    :contentName="contentName"
+    :type="type"
     variant="danger"
     attribute="deleteFolder"
   >
