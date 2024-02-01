@@ -38,7 +38,7 @@ const loadingOperation = computed(() => store.loadingOperation)
 // ACTIONS
 const setDisk = (disk: string) => store.setDisk({ disk })
 const setPerPage = (perPage: number) => store.setPerPage({ perPage })
-const setPath = (path: string,id: number) => store.setPath({ path,id })
+const setPath = (path: string, id: number) => store.setPath({ path, id })
 const setView = (view: View) => store.setView({ view })
 const openModal = (name: string) => store.openModal({ name })
 const clearSelection = () => store.clearSelection()

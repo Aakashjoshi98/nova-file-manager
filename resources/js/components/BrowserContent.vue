@@ -20,7 +20,6 @@ withDefaults(defineProps<Props>(), {
   filled: false,
   view: 'grid',
 })
-
 </script>
 
 <template>
@@ -64,5 +63,5 @@ withDefaults(defineProps<Props>(), {
     <List />
   </template>
 
-  <Empty v-if="!filled" :folder="folders"/>
+  <Empty v-if="!filled" :folder="folders" />
 </template>

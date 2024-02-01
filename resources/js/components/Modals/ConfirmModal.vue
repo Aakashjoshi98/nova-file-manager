@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { DialogPanel, DialogTitle } from '@headlessui/vue'
 import { Component, computed } from 'vue'
+import { watchEffect, ref, getCurrentInstance } from 'vue'
 import { useErrors } from '@/hooks'
 import BaseModal from './BaseModal.vue'
-import { watchEffect, ref, getCurrentInstance } from 'vue'
 
 const variants = {
   danger: {
@@ -11,7 +11,7 @@ const variants = {
     iconColor: 'text-red-600 dark:text-red-500',
   },
 }
-const instance = getCurrentInstance();
+const instance = getCurrentInstance()
 interface Props {
   name: string
   attribute: string
@@ -28,11 +28,10 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'danger',
 })
 
-
 const localPasswordValue = ref(props.passwordValue)
 
 watchEffect(() => {
-  instance.emit('updatePasswordValue', localPasswordValue.value);
+  instance.emit('updatePasswordValue', localPasswordValue.value)
 })
 const { invalid, errors } = useErrors(props.attribute)
 // const passwordValue = ref('') // New ref for password
@@ -53,7 +52,11 @@ const iconBackgroundClass = computed(() => (props.variant ? variants[props.varia
           <component :is="icon" :class="`${iconColorClass} h-6 w-6`" aria-hidden="true" />
         </div>
         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-          <DialogTitle as="h1" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" v-if="type == 'folder'">
+          <DialogTitle
+            as="h1"
+            class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
+            v-if="type == 'folder'"
+          >
             {{ __('Remove folder') }}: {{ contentName }}
           </DialogTitle>
           <DialogTitle as="h1" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" v-else>
@@ -68,25 +71,25 @@ const iconBackgroundClass = computed(() => (props.variant ? variants[props.varia
             </p>
           </div>
           <!-- Password Input -->
-        <div
-          :class="[
-            'mt-2 w-full border rounded-md space-y-2 px-3 py-2 bg-gray-100 dark:bg-gray-900 shadow-sm focus-within:ring-1 focus-within:ring-blue-600 focus-within:border-blue-600',
-            !invalid ? 'border-gray-400 dark:border-gray-700' : 'border-red-400 dark:border-red-700',
-          ]"
-        >
-          <label class="block text-xs font-medium text-gray-700 dark:text-gray-200" for="password">
-            {{ __('Password') }}
-          </label>
-          <input
-            id="password"
-            v-model="localPasswordValue"
-            :placeholder="__('Type your password here')"
-            class="block w-full border-0 p-0 bg-gray-100 dark:bg-gray-900 placeholder-gray-400 sm:text-sm text-black dark:text-white focus:outline-none focus:ring-0"
-            name="password"
-            autocomplete="current-password"
-            type="password" 
-          />
-        </div>
+          <div
+            :class="[
+              'mt-2 w-full border rounded-md space-y-2 px-3 py-2 bg-gray-100 dark:bg-gray-900 shadow-sm focus-within:ring-1 focus-within:ring-blue-600 focus-within:border-blue-600',
+              !invalid ? 'border-gray-400 dark:border-gray-700' : 'border-red-400 dark:border-red-700',
+            ]"
+          >
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-200" for="password">
+              {{ __('Password') }}
+            </label>
+            <input
+              id="password"
+              v-model="localPasswordValue"
+              :placeholder="__('Type your password here')"
+              class="block w-full border-0 p-0 bg-gray-100 dark:bg-gray-900 placeholder-gray-400 sm:text-sm text-black dark:text-white focus:outline-none focus:ring-0"
+              name="password"
+              autocomplete="current-password"
+              type="password"
+            />
+          </div>
           <template v-if="invalid">
             <p v-for="(error, index) in errors" :key="`confirm_modal_error_${index}`" class="mt-2 text-sm text-red-600">
               {{ error }}

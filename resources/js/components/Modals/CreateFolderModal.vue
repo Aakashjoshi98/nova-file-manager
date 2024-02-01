@@ -18,14 +18,14 @@ const value = ref<string>()
 onMounted(() => (value.value = undefined))
 
 const { invalid, errors } = useErrors(OPERATIONS.CREATE_FOLDER)
-let submitStatus = ref('idle');
+let submitStatus = ref('idle')
 const submit = () => {
-  submitStatus.value = 'loading';
+  submitStatus.value = 'loading'
   if (!value.value) {
-    submitStatus.value = 'error';
+    submitStatus.value = 'error'
     return
   }
-  submitStatus.value = 'success'; 
+  submitStatus.value = 'success'
   props.onSubmit(value.value)
 
   value.value = undefined
@@ -63,7 +63,7 @@ const submit = () => {
     </template>
 
     <template v-slot:submitButton>
-      <Button :disabled="submitStatus === 'loading'" class="w-full sm:w-auto" type="submit" variant="primary" >
+      <Button :disabled="submitStatus === 'loading'" class="w-full sm:w-auto" type="submit" variant="primary">
         <span v-if="submitStatus === 'loading'">{{ __('Creating') }}</span>
         <span v-else>{{ __('Create') }}</span>
       </Button>

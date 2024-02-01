@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import axios from 'axios'
 import { onMounted, ref } from 'vue'
+import { watch } from 'vue'
 import Button from '@/components/Elements/Button.vue'
 import InputModal from '@/components/Modals/InputModal.vue'
 import { OPERATIONS } from '@/constants'
 import { useErrors } from '@/hooks'
-import axios from 'axios'
-import { watch } from 'vue';
+
 interface Props {
   name: string
   onSubmit: (value: string) => void
@@ -19,55 +20,54 @@ const { invalid, errors } = useErrors(OPERATIONS.RENAME_FILE)
 // STATE
 const nameValue = ref(null as string | null | undefined)
 const passwordValue = ref('') // New ref for password
-let submitStatus = ref('idle');
+let submitStatus = ref('idle')
 // HOOKS
 onMounted(() => (nameValue.value = props.from))
 const clearPassword = () => {
-  passwordValue.value = ''; // Clear the password field
+  passwordValue.value = '' // Clear the password field
 }
 
 const nameWithoutExtension = ref('')
-const extension = ref('');
+const extension = ref('')
 // ACTIONS
 const submit = () => {
-  submitStatus.value = 'loading';
+  submitStatus.value = 'loading'
   if (!passwordValue.value.trim()) {
-      Nova.error("Please enter a password.", { type: 'error' });
-      submitStatus.value = 'error';
-      return;
-    }
+    Nova.error('Please enter a password.', { type: 'error' })
+    submitStatus.value = 'error'
+    return
+  }
   if (nameValue.value && passwordValue.value) {
-    let data = {};
-    data.password = passwordValue.value;
-    
-    if (nameValue.value.length == 0 || (nameWithoutExtension.length == 0)) {
-      Nova.error("Name is requied", {type: 'error',})
-      submitStatus.value = 'error';
-      return false;
+    let data = {}
+    data.password = passwordValue.value
+
+    if (nameValue.value.length == 0 || nameWithoutExtension.value.length == 0) {
+      Nova.error('Name is requied', { type: 'error' })
+      submitStatus.value = 'error'
+      return false
     }
-    axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then((response) => {
-        if(response.data == true){
-          props.onSubmit(nameValue.value)
-          submitStatus.value = 'success';          
-        } else {
-          submitStatus.value = 'error';
-          Nova.error("Your password is incorrect. Please enter valid password", {type: 'error',})
-        }
-    });
-    
+    axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then(response => {
+      if (response.data == true) {
+        props.onSubmit(nameValue.value)
+        submitStatus.value = 'success'
+      } else {
+        submitStatus.value = 'error'
+        Nova.error('Your password is incorrect. Please enter valid password', { type: 'error' })
+      }
+    })
   }
 }
 watch(nameValue, () => {
   if (nameValue.value) {
-    var re = /(?:\.([^.]+))?$/;
-    let ext = re.exec(nameValue.value);
-    extension.value = ext ? ext[0] : '';
-    
+    var re = /(?:\.([^.]+))?$/
+    let ext = re.exec(nameValue.value)
+    extension.value = ext ? ext[0] : ''
+
     if (extension.value) {
-      nameWithoutExtension.value = nameValue.value.replace(extension.value, '');
+      nameWithoutExtension.value = nameValue.value.replace(extension.value, '')
     }
   }
-});
+})
 </script>
 
 <template>
@@ -83,20 +83,23 @@ watch(nameValue, () => {
           <label class="block text-xs font-medium text-gray-700 dark:text-gray-200" for="name">
             {{ __('Name') }}
           </label>
-          <div class="flex  items-stretch w-full mb-4 relative">
-          <input
-            id="name"
-            v-model="nameWithoutExtension"
-            :placeholder="__('Name')"
-            class="block w-full border-0 p-0 bg-gray-100 dark:bg-gray-900 placeholder-gray-400 sm:text-sm text-black dark:text-white focus:outline-none focus:ring-0"
-            name="name"
-            type="text"
-            autocomplete="file-name"
-          />
-          <div class="flex -mr-px">
-              <span class="flex items-center leading-normal bg-50 rounded rounded-l-none form-input-bordered-right px-3 whitespace-no-wrap text-grey-dark text-sm dark:bg-gray-800">{{ extension }}</span>
+          <div class="flex items-stretch w-full mb-4 relative">
+            <input
+              id="name"
+              v-model="nameWithoutExtension"
+              :placeholder="__('Name')"
+              class="block w-full border-0 p-0 bg-gray-100 dark:bg-gray-900 placeholder-gray-400 sm:text-sm text-black dark:text-white focus:outline-none focus:ring-0"
+              name="name"
+              type="text"
+              autocomplete="file-name"
+            />
+            <div class="flex -mr-px">
+              <span
+                class="flex items-center leading-normal bg-50 rounded rounded-l-none form-input-bordered-right px-3 whitespace-no-wrap text-grey-dark text-sm dark:bg-gray-800"
+                >{{ extension }}</span
+              >
+            </div>
           </div>
-        </div>
         </div>
         <div
           :class="[

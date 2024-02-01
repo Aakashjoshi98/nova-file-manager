@@ -31,7 +31,13 @@ const icon = computed(() => ExclamationCircleIcon)
     attribute="deleteFolder"
   >
     <template v-slot:confirmButton>
-      <Button :disabled="submitStatus === 'loading'" class="w-full sm:w-auto" type="submit" variant="primary" @click="onConfirm">
+      <Button
+        :disabled="submitStatus === 'loading'"
+        class="w-full sm:w-auto"
+        type="submit"
+        variant="primary"
+        @click="onConfirm"
+      >
         <span v-if="submitStatus === 'loading'">{{ __('Deleting') }}</span>
         <span v-else>{{ __('Delete') }}</span>
       </Button>

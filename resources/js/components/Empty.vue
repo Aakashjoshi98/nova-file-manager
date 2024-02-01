@@ -8,12 +8,12 @@ interface Props {
   onConfirm: () => void
 }
 const onDelete = () => {
-  let path = store.currentFolder.path;
-  store.removeFolder({ id: store.currentFolder.id, path: path })   
-  let pathSegments = path.split('/');
-  pathSegments.pop();
-  const newPath = pathSegments.join('/');
-  
+  let path = store.currentFolder.path
+  store.removeFolder({ id: store.currentFolder.id, path: path })
+  let pathSegments = path.split('/')
+  pathSegments.pop()
+  const newPath = pathSegments.join('/')
+
   store.setPath(newPath)
 }
 defineProps<Props>()
@@ -62,8 +62,13 @@ defineProps<Props>()
     <p class="mt-1 text-sm text-gray-500">
       {{ subtitle ?? __('You can upload a new file or create a new folder') }}
     </p>
-    <Button  class="mt-3 inline-flex items-center rounded-full border-0 p-2 shadow-sm focus:outline-none focus:ring-1 hover:opacity-75 disabled:opacity-25 bg-red-500 text-white focus:outline-red-500" type="submit" variant="warning" @click="onDelete">
-        <span>{{ __('Remove directory') }}</span>
-      </Button>
+    <Button
+      class="mt-3 inline-flex items-center rounded-full border-0 p-2 shadow-sm focus:outline-none focus:ring-1 hover:opacity-75 disabled:opacity-25 bg-red-500 text-white focus:outline-red-500"
+      type="submit"
+      variant="warning"
+      @click="onDelete"
+    >
+      <span>{{ __('Remove directory') }}</span>
+    </Button>
   </div>
 </template>

@@ -3,12 +3,12 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { FolderIcon } from '@heroicons/vue/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/vue/24/solid'
 import type { Folder } from '__types__'
+import axios from 'axios'
+import { onMounted, ref } from 'vue'
 import DeleteFolderModal from '@/components/Modals/DeleteFolderModal.vue'
 import RenameFolderModal from '@/components/Modals/RenameFolderModal.vue'
 import { usePermissions } from '@/hooks'
 import useBrowserStore from '@/stores/browser'
-import axios from 'axios'
-import { onMounted, ref } from 'vue'
 
 interface Props {
   folder: Folder
@@ -18,37 +18,35 @@ const props = defineProps<Props>()
 
 const store = useBrowserStore()
 const { showRenameFolder, showDeleteFolder } = usePermissions()
-let submitStatus = ref('idle');
+let submitStatus = ref('idle')
 let passwordValue = ref('') // New ref for password
 // ACTIONS
 const openModal = (name: string) => store.openModal({ name })
 
-const setPath = (path: string,id: number) => store.setPath({ path,id })
+const setPath = (path: string, id: number) => store.setPath({ path, id })
 
 const onDelete = () => {
-  submitStatus.value = 'loading';
-  
+  submitStatus.value = 'loading'
+
   if (!passwordValue.value.trim()) {
-      Nova.error("Please enter a password.", { type: 'error' });
-      submitStatus.value = 'error';
-      return;
-    }
-  if (passwordValue.value) {
-    let data = {};
-    data.password = passwordValue.value;
-    
-    axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then((response) => {
-        if(response.data == true){
-          submitStatus.value = 'success'; 
-          store.deleteFolder({ id: props.folder.id, path: props.folder.path })   
-        } else {
-          submitStatus.value = 'error';
-          Nova.error("Your password is incorrect. Please enter valid password", {type: 'error',})
-        }
-    });
-    
+    Nova.error('Please enter a password.', { type: 'error' })
+    submitStatus.value = 'error'
+    return
   }
-  
+  if (passwordValue.value) {
+    let data = {}
+    data.password = passwordValue.value
+
+    axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then(response => {
+      if (response.data == true) {
+        submitStatus.value = 'success'
+        store.deleteFolder({ id: props.folder.id, path: props.folder.path })
+      } else {
+        submitStatus.value = 'error'
+        Nova.error('Your password is incorrect. Please enter valid password', { type: 'error' })
+      }
+    })
+  }
 }
 
 const onRename = (value: string) => {
@@ -64,7 +62,7 @@ const onRename = (value: string) => {
   <li
     class="relative group col-span-1 flex rounded-md transition duration-100 cursor-pointer bg-gray-100 dark:bg-gray-900 hover:shadow-md rounded-md"
   >
-    <button class="flex w-full flex-row items-center" @click="setPath(folder.path,folder.id)">
+    <button class="flex w-full flex-row items-center" @click="setPath(folder.path, folder.id)">
       <span
         class="flex-shrink-0 flex items-center justify-center py-4 pl-3 text-gray-900 dark:text-gray-100 text-sm font-medium group-hover:opacity-75"
       >
@@ -115,8 +113,16 @@ const onRename = (value: string) => {
     </div>
   </li>
 
-  <DeleteFolderModal v-if="showDeleteFolder" :name="`delete-folder-${folder.id}`" :on-confirm="onDelete" :content-name="folder.name" :type="folder.type" :submitStatus="submitStatus" :passwordValue="passwordValue"
-  @updatePasswordValue="newValue => passwordValue = newValue"/>
+  <DeleteFolderModal
+    v-if="showDeleteFolder"
+    :name="`delete-folder-${folder.id}`"
+    :on-confirm="onDelete"
+    :content-name="folder.name"
+    :type="folder.type"
+    :submitStatus="submitStatus"
+    :passwordValue="passwordValue"
+    @updatePasswordValue="newValue => (passwordValue = newValue)"
+  />
 
   <RenameFolderModal
     v-if="showRenameFolder"

@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import Button from '@/components/Elements/Button.vue'
 import InputModal from '@/components/Modals/InputModal.vue'
 import { OPERATIONS } from '@/constants'
 import { useErrors } from '@/hooks'
-import axios from 'axios'
 
 interface Props {
   name: string
@@ -20,38 +20,37 @@ const { invalid, errors } = useErrors(OPERATIONS.RENAME_FOLDER)
 // STATE
 let nameValue = ref(null as string | null) // Rename value to nameValue for folder name
 let passwordValue = ref('') // New ref for password
-let submitStatus = ref('idle');
+let submitStatus = ref('idle')
 // HOOKS
 onMounted(() => (nameValue.value = props.from))
 const clearPassword = () => {
-  passwordValue.value = ''; // Clear the password field
+  passwordValue.value = '' // Clear the password field
 }
 // ACTIONS
 const submit = () => {
-  submitStatus.value = 'loading';
+  submitStatus.value = 'loading'
   if (!passwordValue.value.trim()) {
-      Nova.error("Please enter a password.", { type: 'error' });
-      submitStatus.value = 'error';
-      return;
-    }
+    Nova.error('Please enter a password.', { type: 'error' })
+    submitStatus.value = 'error'
+    return
+  }
   if (nameValue.value && passwordValue.value) {
-    let data = {};
-    data.password = passwordValue.value;
+    let data = {}
+    data.password = passwordValue.value
     if (nameValue.value.length == 0) {
-      Nova.error("Name is requied", {type: 'error',})
-      submitStatus.value = 'error';
-      return false;
+      Nova.error('Name is requied', { type: 'error' })
+      submitStatus.value = 'error'
+      return false
     }
-    axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then((response) => {
-        if(response.data == true){
-          submitStatus.value = 'success'; 
-          props.onSubmit(nameValue.value)          
-        } else {
-          submitStatus.value = 'error';
-          Nova.error("Your password is incorrect. Please enter valid password", {type: 'error',})
-        }
-    });
-    
+    axios.post('/nova-vendor/nova-file-manager/validatePassword', data).then(response => {
+      if (response.data == true) {
+        submitStatus.value = 'success'
+        props.onSubmit(nameValue.value)
+      } else {
+        submitStatus.value = 'error'
+        Nova.error('Your password is incorrect. Please enter valid password', { type: 'error' })
+      }
+    })
   }
 }
 </script>
@@ -98,7 +97,7 @@ const submit = () => {
             class="block w-full border-0 p-0 bg-gray-100 dark:bg-gray-900 placeholder-gray-400 sm:text-sm text-black dark:text-white focus:outline-none focus:ring-0"
             name="password"
             autocomplete="current-password"
-            type="password" 
+            type="password"
           />
         </div>
 

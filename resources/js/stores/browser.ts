@@ -77,7 +77,7 @@ interface State {
   pinturaOptions?: PinturaOptions
   cropperOptions?: CropperOptions
   component?: string
-  currentFolder: { id?: string; path?: string };
+  currentFolder: { id?: string; path?: string }
 }
 
 const useBrowserStore = defineStore('nova-file-manager/browser', {
@@ -441,12 +441,12 @@ const useBrowserStore = defineStore('nova-file-manager/browser', {
     /**
      * Set the current path
      */
-    async setPath({ path, id }: { path?: string, id?: number }) {
+    async setPath({ path, id }: { path?: string; id?: number }) {
       this.reset()
 
       this.path = path
-      
-      this.currentFolder = { id: id, path: path };
+
+      this.currentFolder = { id: id, path: path }
 
       this.setQueryString({ parameters: { page: null, search: null, path } })
     },
