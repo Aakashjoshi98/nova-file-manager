@@ -37,5 +37,6 @@ Route::as('nova-file-manager.')->middleware('nova')->group(static function () {
         Route::post('create/{resource?}', [FolderController::class, 'create'])->name('create');
         Route::post('rename/{resource?}', [FolderController::class, 'rename'])->name('rename');
         Route::post('delete/{resource?}', [FolderController::class, 'delete'])->name('delete');
+        Route::post('remove/{resource?}', [FolderController::class, 'remove'])->name('remove');
     });
 });

@@ -100,4 +100,24 @@ class FolderController extends Controller
             'message' => __('nova-file-manager::messages.folder.delete'),
         ]);
     }
+    public function remove(DeleteFolderRequest $request): JsonResponse
+    {
+        $path = $request->path;
+
+        event(new FolderDeleting($request->manager()->filesystem(), $request->manager()->getDisk(), $path));
+
+        $result = $request->manager()->rmdir($path);
+
+        if (!$result) {
+            throw ValidationException::withMessages([
+                'folder' => [__('nova-file-manager::errors.folder.remove')],
+            ]);
+        }
+
+        event(new FolderDeleted($request->manager()->filesystem(), $request->manager()->getDisk(), $path));
+
+        return response()->json([
+            'message' => __('nova-file-manager::messages.folder.remove'),
+        ]);
+    }
 }

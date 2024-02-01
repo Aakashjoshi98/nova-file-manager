@@ -15,6 +15,7 @@ return [
         'create' => 'The folder could not be created!',
         'rename' => 'The folder could not be renamed!',
         'delete' => 'The folder could not be deleted!',
+        'remove' => 'Error removing the folder. Please check permissions!'
     ],
 
     'authorization' => [

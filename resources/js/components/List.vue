@@ -24,7 +24,7 @@ const onFolderRename = (id: string, from: string, to: string) => store.renameFil
 const onFolderDelete = (id: string, path: string) => store.deleteFolder({ id, path })
 const openPreview = (file: Entity) => (store.preview = file)
 const toggleSelection = (file: Entity) => store.toggleSelection({ file })
-const setPath = (path: string) => store.setPath({ path })
+const setPath = (path: string,id: number) => store.setPath({ path,id })
 const openModal = (name: string) => store.openModal({ name })
 </script>
 
@@ -38,7 +38,7 @@ const openModal = (name: string) => store.openModal({ name })
       </tr>
       <template v-for="folder in folders" :key="folder.id">
         <tr class="cursor-pointer">
-          <td class="whitespace-nowrap py-4 text-sm" @click="setPath(folder.path)">
+          <td class="whitespace-nowrap py-4 text-sm" @click="setPath(folder.path,folder.id)">
             <div class="flex items-center text-gray-500 dark:text-gray-300 hover:text-blue-500">
               <FolderIcon class="w-5 h-5" />
               <div class="ml-4">

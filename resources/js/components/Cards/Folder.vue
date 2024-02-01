@@ -23,11 +23,10 @@ let passwordValue = ref('') // New ref for password
 // ACTIONS
 const openModal = (name: string) => store.openModal({ name })
 
-const setPath = (path: string) => store.setPath({ path })
+const setPath = (path: string,id: number) => store.setPath({ path,id })
 
 const onDelete = () => {
   submitStatus.value = 'loading';
-  console.log(passwordValue.value);
   
   if (!passwordValue.value.trim()) {
       Nova.error("Please enter a password.", { type: 'error' });
@@ -65,7 +64,7 @@ const onRename = (value: string) => {
   <li
     class="relative group col-span-1 flex rounded-md transition duration-100 cursor-pointer bg-gray-100 dark:bg-gray-900 hover:shadow-md rounded-md"
   >
-    <button class="flex w-full flex-row items-center" @click="setPath(folder.path)">
+    <button class="flex w-full flex-row items-center" @click="setPath(folder.path,folder.id)">
       <span
         class="flex-shrink-0 flex items-center justify-center py-4 pl-3 text-gray-900 dark:text-gray-100 text-sm font-medium group-hover:opacity-75"
       >

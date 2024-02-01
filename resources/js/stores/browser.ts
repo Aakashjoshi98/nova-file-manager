@@ -77,6 +77,7 @@ interface State {
   pinturaOptions?: PinturaOptions
   cropperOptions?: CropperOptions
   component?: string
+  currentFolder: { id?: string; path?: string };
 }
 
 const useBrowserStore = defineStore('nova-file-manager/browser', {
@@ -149,6 +150,7 @@ const useBrowserStore = defineStore('nova-file-manager/browser', {
     usePintura: false,
     pinturaOptions: {},
     cropperOptions: {},
+    currentFolder: { id: undefined, path: undefined },
   }),
 
   actions: {
@@ -439,10 +441,12 @@ const useBrowserStore = defineStore('nova-file-manager/browser', {
     /**
      * Set the current path
      */
-    async setPath({ path }: { path?: string }) {
+    async setPath({ path, id }: { path?: string, id?: number }) {
       this.reset()
 
       this.path = path
+      
+      this.currentFolder = { id: id, path: path };
 
       this.setQueryString({ parameters: { page: null, search: null, path } })
     },
@@ -578,6 +582,17 @@ const useBrowserStore = defineStore('nova-file-manager/browser', {
         operation: OPERATIONS.DELETE_FOLDER,
         modal: `${MODALS.DELETE_FOLDER}-${id}`,
         endpoint: ENDPOINTS.DELETE_FOLDER,
+        data: this.payload({
+          path: path,
+        }),
+      })
+    },
+
+    async removeFolder({ id, path }: { id: string; path: string }) {
+      await attempt({
+        operation: OPERATIONS.REMOVE_FOLDER,
+        modal: `${MODALS.REMOVE_FOLDER}-${id}`,
+        endpoint: ENDPOINTS.REMOVE_FOLDER,
         data: this.payload({
           path: path,
         }),

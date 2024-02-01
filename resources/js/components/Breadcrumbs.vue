@@ -4,7 +4,7 @@ import { Breadcrumb } from '__types__'
 
 interface Props {
   items: Breadcrumb[]
-  setPath: (path: string) => void
+  setPath: (path: string,id: number) => void
 }
 
 withDefaults(defineProps<Props>(), {
@@ -34,7 +34,7 @@ withDefaults(defineProps<Props>(), {
             :class="`ml-2 text-xs font-regular hover:text-blue-500 ${
               page.current ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 dark:text-gray-600'
             }`"
-            @click.prevent="setPath(page.path)"
+            @click.prevent="setPath(page.path,page.id)"
           >
             {{ page.name }}
           </button>

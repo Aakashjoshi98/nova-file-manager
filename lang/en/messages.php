@@ -15,5 +15,6 @@ return [
         'create' => 'Folder created successfully!',
         'rename' => 'Folder renamed successfully!',
         'delete' => 'Folder deleted successfully!',
+        'remove' => 'Folder removed successfully!'
     ],
 ];
